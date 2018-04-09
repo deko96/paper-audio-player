@@ -242,7 +242,11 @@ Custom property                             | Description                       
         <div id="title" class="fit" role="alert">{{ title }}</div>
 
         <!-- Audio HTML5 element -->
-        <audio id="audio" src="{{ src }}" preload="{{ _setPreload(autoPlay, preload) }}"></audio>
+        <audio 
+          id="audio"
+          src="{{ src }}"
+          preload="{{ _setPreload(autoPlay, preload) }}"
+          ></audio>
 
         <!-- Progress bar -->
         <div id="progress" class="fit"></div>
@@ -346,18 +350,6 @@ Custom property                             | Description                       
         }
       },
 
-
-      //
-      // Register event listeners
-
-      listeners: {
-        'audio.loadedmetadata'  : '_onCanPlay',
-        'audio.playing'         : '_onPlaying',
-        'audio.pause'           : '_onPause',
-        'audio.ended'           : '_onEnd',
-        'audio.error'           : '_onError'
-      },
-
       keyBindings: {
         'space' : 'playPause',
         'enter' : 'playPause',
@@ -381,6 +373,15 @@ Custom property                             | Description                       
         player.error = false;
         player.$.audio.currentTime = player.timeOffset; // apply the audio start time property
 
+        // Bind event listeners
+        player.$.audio.addEventListener('loadedmetadata', this._onCanPlay.bind(this));
+        player.$.audio.addEventListener('playing', this._onPlaying.bind(this));
+        player.$.audio.addEventListener('pause', this._onPause.bind(this));
+        player.$.audio.addEventListener('ended', this._onEnd.bind(this));
+        player.$.audio.addEventListener('error', this._onError.bind(this));
+
+        window.players = window.players ? window.players : [];
+        window.players.push(this.$.audio);
         // If 'ga-id' property is set,
         // prepare Google Analytics tracker
         if (!!player.gaId) player._setupGATracking();
@@ -397,6 +398,7 @@ Custom property                             | Description                       
           if (player.isPlaying) {
             player._pause();
           } else {
+            this._stopAll();
             player._play();
           }
 
@@ -404,8 +406,17 @@ Custom property                             | Description                       
           // If player can't be played, because audio wasn't pre-loaded
           // due to the preload="none" property set,
           // load the audio file at this point and start playing it immediately
+          this._stopAll();          
           player.$.audio.load();
           player._play();
+        }
+      },
+      
+      _stopAll: function() {
+        if (window.players) {
+          window.players.forEach(player => {
+            player.pause();
+          });
         }
       },
 
@@ -629,7 +640,6 @@ Custom property                             | Description                       
 
       _updateVisualProgress: function(percentagePlayed) {
         var player = this;
-
         player.$.progress.style.transform = 'scaleX(' + percentagePlayed + ')';
         player.$.progress2.style.width = percentagePlayed * 100 + '%';
         player.$.title2.style.width = (1 / percentagePlayed) * 100 + '%';

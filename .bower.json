@@ -1,6 +1,5 @@
 {
   "name": "paper-audio-player",
-  "version": "2.0.0",
   "authors": [
     "Nadi Dikun <dikunn@gmail.com>"
   ],
@@ -36,5 +35,15 @@
     "test-fixture": "PolymerElements/test-fixture#^3.0.0",
     "web-component-tester": "^6.5.0",
     "normalize.css": "^8.0.0"
-  }
+  },
+  "_release": "c24c1d58ba",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "c24c1d58baee0a642831c8b73019ae6bf9f39a29"
+  },
+  "_source": "https://github.com/deko96/paper-audio-player.git",
+  "_target": "*",
+  "_originalSource": "deko96/paper-audio-player",
+  "_direct": true
 }
