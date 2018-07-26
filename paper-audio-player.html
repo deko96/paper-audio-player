@@ -91,9 +91,8 @@ Custom property                             | Description                       
       #duration,
       #title,
       #progress2 {
-        text-align: left;
+        text-align: center;
         line-height: var(--paper-audio-player-height, 50px);
-        margin-left: 5px;
       }
 
       #duration {
@@ -157,13 +156,13 @@ Custom property                             | Description                       
 
       /* On hover */
 
-      :host:not(.cantplay) #right:hover #replay {
+      /*:host:not(.cantplay) #right:hover #replay {
         opacity: 1;
-      }
+      }*/
 
-      #right:hover #duration {
+      /*#right:hover #duration {
         opacity: 0;
-      }
+      }*/
 
       #left:hover #play,
       #left:hover #pause {
@@ -257,12 +256,15 @@ Custom property                             | Description                       
       <div id="right" class="self-end" on-click="restart">
 
         <!-- Duration -->
-        <div id="duration" class="fit" hidden$="{{ ended }}">
+        <div id="duration" class="fit">
           <span class="fit" role="timer" aria-label="Audio Track Length">{{ _convertSecToMin(timeLeft) }}</span>
         </div>
+        <!--<div id="duration" class="fit" hidden$="{{ ended }}">
+          <span class="fit" role="timer" aria-label="Audio Track Length">{{ _convertSecToMin(timeLeft) }}</span>
+		</div>-->
 
         <!-- Icon -->
-        <paper-icon-button id="replay" class="fit" icon="paper-audio-icons:replay" tabindex="-1" role="button" aria-label="Replay Audio"></paper-icon-button>
+			<!--<paper-icon-button id="replay" class="fit" icon="paper-audio-icons:replay" tabindex="-1" role="button" aria-label="Replay Audio"></paper-icon-button>-->
       </div>
     </div>
   </template>
@@ -462,7 +464,7 @@ Custom property                             | Description                       
         var player = this;
         player.ended = false;
         player.isPlaying = true;
-        player.$.replay.style = ''; // remove Replay inline styling
+        //player.$.replay.style = ''; // remove Replay inline styling
         player._startProgressTimer();
       },
 
@@ -532,7 +534,9 @@ Custom property                             | Description                       
         var player = this;
         player.ended = true;
         player.isPlaying = false;
-        player.$.replay.style.opacity = 1; // display Replay icon
+        //player.$.replay.style.opacity = 1; // display Replay icon
+        player.$.audio.currentTime = player.timeOffset; // apply the audio start time property
+        player.timeLeft = player.$.audio.duration;
 
         // Dispatch 'Ended' event to GA
         if (!!player.gaId) this._dispatchGAEvent('Ended');
@@ -656,7 +660,7 @@ Custom property                             | Description                       
         player.$.title.style.color = newValue;
         player.$.duration.style.color = newValue;
         player.$.progress.style.backgroundColor = newValue;
-        player.$.replay.style.color = newValue;
+        //player.$.replay.style.color = newValue;
       },
 
       _hidePlayIcon: function (isPlaying, canBePlayed) {
